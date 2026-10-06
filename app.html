@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تشكيل — لوحة المدير</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F0F0F0;--sf:#FFFFFF;--sky:#80C0E0;--sky2:#E3F1F8;--but:#FFDE96;--but2:#FFF4DB;--ink:#555555;--bk:#000;--ln:#E4E4E4;
+--fd:"Thmanyah Serif Display","IBM Plex Sans Arabic",serif;--fs:"IBM Plex Sans Arabic",system-ui,sans-serif;--sh:0 8px 24px rgba(0,0,0,.06)}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--bk);font-family:var(--fs);font-size:15px;line-height:1.6}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 32px 64px}
+/* top bar */
+.top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px}
+.me{display:flex;align-items:center;gap:10px;background:#000;color:#fff;border-radius:999px;padding:7px 18px 7px 8px;font-weight:600}
+.me .av{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center}.me .av svg{width:28px}
+.nav{justify-self:center;display:flex;gap:4px;background:#fff;border-radius:999px;padding:6px;box-shadow:var(--sh)}
+.nav button{padding:9px 26px;border-radius:999px;font-weight:500;color:var(--ink);transition:.2s}
+.nav button[aria-current=true]{background:var(--sky);color:#000;font-weight:700}
+.nav button:hover:not([aria-current=true]){background:var(--bg);color:#000}
+.acts{display:flex;gap:10px;align-items:center}
+.ib{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:var(--sh);position:relative}
+.ib .dot{position:absolute;top:10px;left:12px;width:8px;height:8px;border-radius:50%;background:var(--bk);box-shadow:0 0 0 2px #fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:600;white-space:nowrap}
+.btn.p{background:#000;color:#fff}.btn.s{background:#fff;box-shadow:var(--sh)}.btn.g{background:var(--bg)}
+.btn:focus-visible,.nav button:focus-visible,.ib:focus-visible{outline:2px solid #000;outline-offset:2px}
+/* headings */
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:40px 0 24px}
+h1{font:700 52px/1.15 var(--fd);margin:0}.hero p{margin:6px 0 0;color:var(--ink);font-size:16px}
+h2{font:700 24px/1.3 var(--fd);margin:0}h3{margin:0;font-size:16px}
+.card{background:var(--sf);border-radius:28px;padding:28px;box-shadow:var(--sh)}
+.sec{margin-top:20px}.row{display:flex;align-items:center;gap:12px}.sp{flex:1}.mu{color:var(--ink)}.sm{font-size:13px}
+/* icons */
+.ic{width:20px;height:20px;flex:none}.icc{width:44px;height:44px;border-radius:50%;background:#000;display:grid;place-items:center;flex:none;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--ln)}
+/* status chips */
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.chip svg{width:14px;height:14px}
+.c-ready{background:var(--sky2);color:#000}.c-dev{background:var(--but);color:#000}.c-ver{background:#fff;border:1.5px dashed #000}.c-lim{background:var(--bg);color:var(--ink)}
+.c-late{background:var(--but);color:#000}.c-prog{background:var(--sky2)}.c-plan{background:#fff;border:1.5px solid var(--ln)}.c-done{background:#000;color:#fff}.c-arch{background:var(--bg);color:var(--ink)}
+.c-draft{background:#fff;border:1.5px dashed var(--ink);color:var(--ink)}.c-appr{background:var(--sky);color:#000}.c-wait{background:var(--but2);border:1.5px solid var(--but)}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{background:var(--bg);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:6px;text-align:right;transition:.2s}
+.kpi:hover{background:#E9E9E9}.kpi .n{font:700 40px/1 var(--fs)}.kpi .l{font-weight:600}.kpi .lk{font-size:13px;color:var(--ink);margin-top:auto}
+.bar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--bg);margin:18px 0 10px}
+.bar i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:13px}.legend span{display:inline-flex;align-items:center;gap:6px}.sw{width:12px;height:12px;border-radius:4px;display:inline-block}
+/* list */
+.search{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:999px;padding:10px 16px;min-width:280px}.search input{border:0;background:none;outline:0;flex:1}
+.emp{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:16px;align-items:center;padding:14px 12px;border-radius:18px;width:100%;text-align:right}
+.emp:hover{background:var(--bg)}.emp+.emp{border-top:1px solid var(--ln)}
+.av2{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;flex:none}
+.av-k{background:#000;color:#fff}.av-s{background:var(--sky)}.av-b{background:var(--but)}
+.pill{border:1px solid var(--ln);border-radius:999px;padding:4px 12px;font-size:13px;color:var(--ink);white-space:nowrap}.pill b{color:#000}
+.g2{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.seg{display:inline-flex;background:var(--bg);border-radius:999px;padding:4px}.seg button{padding:6px 14px;border-radius:999px;font-size:13px;color:var(--ink)}.seg button[aria-pressed=true]{background:#000;color:#fff}
+.plan{background:linear-gradient(160deg,var(--sky2),#fff 60%,var(--but2));}
+.inner{background:#fff;border-radius:20px;padding:20px;margin:16px 0}
+/* table */
+.tbl{width:100%;border-collapse:collapse}.tbl th{font-size:13px;color:var(--ink);font-weight:500;text-align:right;padding:14px 20px;background:#FAFAFA}
+.tbl td{padding:16px 20px;border-top:1px solid var(--ln);vertical-align:middle}.tbl tr.r{cursor:pointer}.tbl tr.r:hover td{background:#FAFAFA}
+.tcard{padding:0;overflow:hidden}.ttl{font-weight:600}.sub{font-size:13px;color:var(--ink)}
+.flt{display:grid;grid-template-columns:auto 1fr 1fr;gap:16px;align-items:end}
+.sel{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink)}.sel select{appearance:none;border:1px solid var(--ln);border-radius:999px;padding:11px 18px;background:#fff;color:#000;font-size:15px}
+.tabs{display:inline-flex;background:var(--bg);border-radius:999px;padding:5px}.tabs button{padding:9px 20px;border-radius:999px;font-weight:500;color:var(--ink)}.tabs button[aria-selected=true]{background:var(--sky);color:#000;font-weight:700}
+/* stepper */
+.steps{display:flex;align-items:flex-start;justify-content:space-between;position:relative;padding:0 10px}
+.steps:before{content:"";position:absolute;top:24px;right:60px;left:60px;border-top:2px dashed var(--ln)}
+.st{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;width:140px;text-align:center}
+.st .n{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:#fff;border:2px solid var(--ln);color:var(--ink)}
+.st.on .n{background:#000;color:#fff;border-color:#000;box-shadow:0 0 0 6px rgba(128,192,224,.35)}.st.dn .n{background:var(--sky);border-color:var(--sky);color:#000}
+.st b{font-size:14px}.st.off b{color:var(--ink);font-weight:500}
+.drop{border:2px dashed #CFCFCF;border-radius:24px;padding:40px;text-align:center;background:#FAFAFA}
+.req{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid var(--ln)}
+.cat{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.cat .col{background:var(--bg);border-radius:20px;padding:16px;min-height:200px}
+.mini{background:#fff;border-radius:14px;padding:10px 12px;margin-top:10px;display:flex;gap:10px;align-items:center}
+.cp{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--ln)}.cp .d{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700}
+/* drawer */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.2s;z-index:20}.ov.on{opacity:1;pointer-events:auto}
+.dr{position:fixed;top:0;bottom:0;left:0;width:min(460px,100%);background:#fff;z-index:21;transform:translateX(-105%);transition:.25s;padding:28px;overflow:auto;box-shadow:0 0 40px rgba(0,0,0,.1)}
+.dr.on{transform:none}.kv{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--ln)}
+.hidden{display:none!important}
+@media (max-width:1000px){.top{grid-template-columns:1fr auto}.nav{grid-column:1/-1;grid-row:2;justify-self:stretch;overflow:auto}.kpis{grid-template-columns:repeat(2,1fr)}.g2,.cat{grid-template-columns:1fr}.emp{grid-template-columns:auto 1fr auto}.emp .pill{display:none}h1{font-size:38px}.flt{grid-template-columns:1fr}.wrap{padding:16px}}
+.ni{display:none}.stm,.grab{display:none}
+@media (max-width:767px){
+body{font-size:15px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}.wrap{padding:12px 16px 24px}
+.top{grid-template-columns:1fr auto;gap:10px}.me{padding:5px 14px 5px 5px;font-size:14px}.me .av{width:34px;height:34px}
+.acts{gap:8px}.acts .bt{display:none}.acts .btn{width:46px;height:46px;padding:0;justify-content:center}.acts .btn.s{display:none}
+.nav{position:fixed;z-index:15;bottom:0;left:0;right:0;justify-self:stretch;grid-column:auto;grid-row:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:24px 24px 0 0;padding:8px 8px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.08);overflow:visible}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:16px;font-size:12px;min-height:56px;justify-content:center}
+.nav .ni{display:block}.nav .ni .ic{width:22px;height:22px}.nav button[aria-current=true]{background:var(--sky)}
+.hero{flex-direction:column;align-items:flex-start;margin:24px 0 16px;gap:14px}h1{font-size:34px}.hero p{font-size:15px}h2{font-size:21px}
+.hero .seg{align-self:stretch;justify-content:space-between}.seg button{flex:1;min-height:40px}
+.card{border-radius:24px;padding:18px}.sec{margin-top:14px}
+.card>.row{flex-wrap:wrap}.search{min-width:0;width:100%;min-height:46px}
+.kpis{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -18px;padding:4px 18px 6px;scrollbar-width:none}.kpis::-webkit-scrollbar{display:none}
+.kpi{min-width:150px;scroll-snap-align:start;padding:16px}.kpi .n{font-size:32px}
+.legend{gap:8px 14px}
+.emp{grid-template-columns:auto 1fr auto;gap:12px;padding:12px 4px}.emp .pill{display:none}
+.g2,.cat{grid-template-columns:1fr}.flt{grid-template-columns:1fr;gap:12px}.tabs{display:flex;overflow-x:auto;scrollbar-width:none}.tabs button{flex:1;white-space:nowrap;min-height:42px}
+.tcard{background:none;box-shadow:none;border-radius:0}.tbl,.tbl tbody{display:block}.tbl thead{display:none}
+.tbl tr{display:grid;grid-template-columns:1fr auto;gap:6px 12px;background:#fff;border-radius:20px;padding:16px;margin-bottom:10px;box-shadow:var(--sh)}
+.tbl td{display:block;border:0;padding:0;font-size:13px;color:var(--ink)}.tbl td:first-child{grid-column:1;color:#000;font-size:15px}
+.tbl td.tst{grid-column:2;grid-row:1;align-self:start}.tbl td[data-l]{grid-column:1/-1}.tbl td[data-l]:before{content:attr(data-l)" · ";color:#999}
+.tbl td.tpr{grid-column:1/-1}.tbl tr:not(.r) td{grid-column:1/-1}
+.steps{display:none}.stm{display:block}.stepnav{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));background:#fff;margin:24px -18px -18px!important;padding:12px 18px;border-radius:0 0 24px 24px;box-shadow:0 -6px 16px rgba(0,0,0,.05)}
+.stepnav .btn{min-height:46px}.drop{padding:28px 16px}.req{grid-template-columns:1fr auto}.req .c-lim{display:none}
+.kv{grid-template-columns:100px 1fr}.cp{flex-wrap:wrap}
+.dr{top:auto;left:0;right:0;bottom:0;width:100%;max-height:90vh;border-radius:28px 28px 0 0;transform:translateY(105%);padding:12px 20px calc(24px + env(safe-area-inset-bottom))}
+.dr.on{transform:none}.grab{display:block;width:44px;height:5px;border-radius:9px;background:#DDD;margin:0 auto 8px}
+.dr .btn{min-height:48px;justify-content:center}
+}
+.spin{animation:sp 1.6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div class="wrap">
+<header class="top">
+ <a href="index.html" class="me" style="text-decoration:none"><span class="av"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 656.0 442.0" width="28" height="19"><g transform="translate(0.0 0.0) scale(1.0000) translate(-206 -284)"><path d="M248 410 H856 A304 304 0 0 1 248 410Z" fill="#FFDE96"/><path d="M212 410 H820 A304 304 0 0 1 212 410Z" fill="#80C0E0"/><circle cx="450" cy="400" r="21" fill="#000000"/><circle cx="516" cy="368" r="54" fill="#000000"/><circle cx="582" cy="400" r="21" fill="#000000"/><path d="M626 292 Q635.0 313.0 656 322 Q635.0 331.0 626 352 Q617.0 331.0 596 322 Q617.0 313.0 626 292Z" fill="#000000"/></g></svg></span><span class="mn">ملاك الدوسري</span></a>
+ <nav class="nav" aria-label="التنقل الرئيسي">
+  <button data-v="home" aria-current="true"><span class="ni"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5h7v8h-7zM13.5 3.5h7v5h-7zM13.5 11.5h7v9h-7zM3.5 14.5h7v6h-7z"/></svg></span><span>لوحة التحكم</span></button><button data-v="tasks"><span class="ni"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/></svg></span><span>المهام</span></button><button data-v="ready"><span class="ni"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V12M10 20V6M16 20v-9M21.5 20H2.5"/></svg></span><span>الجاهزية</span></button><button data-v="plans"><span class="ni"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9 12 4.5 21.5 9 12 13.5zM6 11v5c1.8 1.6 3.8 2.4 6 2.4s4.2-.8 6-2.4v-5M21.5 9v6"/></svg></span><span>خطط التطوير</span></button>
+ </nav>
+ <div class="acts"><button class="ib" aria-label="الإشعارات"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.8 1.8H4.2zM10 21h4"/></svg><span class="dot"></span></button><button class="btn s" aria-label="واجهة الموظف"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg> <span class="bt">واجهة الموظف</span></button><button class="btn p" id="newTask" aria-label="مهمة جديدة"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg> <span class="bt">مهمة جديدة</span></button></div>
+</header>
+
+<!-- HOME -->
+<main id="v-home">
+ <div class="hero"><div><h1>جاهزية فريقك اليوم</h1><p>شوف مين جاهز، ومين يحتاج تطوير، قبل لا يبدأ مشروعك الجاي.</p></div>
+  <div class="seg" role="group" aria-label="الفترة" id="period"></div></div>
+ <section class="card">
+  <div class="row"><h2>نظرة على الفريق</h2><span class="sp"></span><span class="mu sm">مشروع: <b style="color:#000">بوابة العملاء الموحدة V2</b></span></div>
+  <div class="bar" id="rbar"></div><div class="legend" id="rleg"></div>
+  <div class="kpis sec" id="kpis"></div>
+ </section>
+ <section class="card sec">
+  <div class="row"><h2>الموظفون</h2><span class="chip c-plan" id="ecount"></span><span class="sp"></span><label class="search"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20.5 20.5 16 16"/></svg><input id="q" placeholder="ابحث باسم الموظف…" aria-label="بحث"></label></div>
+  <div id="elist" style="margin-top:12px"></div>
+ </section>
+ <div class="g2 sec">
+  <section class="card plan" id="nplan"></section>
+  <section class="card"><div class="row"><div><h2>نمو المهارات</h2><div class="mu sm">المحقق مقابل المستهدف، أسبوعيًا</div></div><span class="sp"></span><div class="legend"><span><i class="sw" style="background:var(--sky)"></i>المحقق</span><span><i class="sw" style="background:none;border:2px dashed #000"></i>المستهدف</span></div></div>
+   <div id="chart" style="margin-top:12px"></div></section>
+ </div>
+</main>
+
+<!-- TASKS -->
+<main id="v-tasks" class="hidden">
+ <div class="hero"><div><h1>المهام</h1><p>كل مهام فريقك في مكان واحد، وتقدر تسندها للأجهز.</p></div></div>
+ <section class="card"><div class="flt">
+  <div class="tabs" role="tablist" id="ttabs"></div>
+  <label class="sel">الحالة<select id="fs"><option value="">كل الحالات</option></select></label>
+  <label class="sel">الموظف<select id="fe"><option value="">كل الفريق</option></select></label></div></section>
+ <section class="card tcard sec"><table class="tbl"><thead><tr><th>المهمة</th><th>المسؤول</th><th>الجهد</th><th>التسليم</th><th>الحالة</th></tr></thead><tbody id="tbody"></tbody></table></section>
+</main>
+
+<!-- READINESS -->
+<main id="v-ready" class="hidden">
+ <div class="hero"><div><h1>الجاهزية</h1><p>ارفع خطتك، واعرف وش ينقص، وطوّر فريقك. القرار لك.</p></div><span class="chip c-plan" id="aiBadge"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg> نتيجة تجريبية</span></div>
+ <section class="card"><div class="steps" id="steps"></div><div class="stm" id="stm"></div></section>
+ <section class="card sec" id="stepBody"></section>
+</main>
+
+<!-- PLANS -->
+<main id="v-plans" class="hidden">
+ <div class="hero"><div><h1>خطط التطوير</h1><p>تابع تطوير فريقك للمشاريع الجاية.</p></div></div>
+ <section class="card"><div class="row" style="flex-wrap:wrap"><label class="search" style="flex:1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20.5 20.5 16 16"/></svg><input id="pq" placeholder="ابحث بالموظف أو المهارة أو المشروع" aria-label="بحث"></label>
+  <div class="tabs" id="ptabs"></div></div></section>
+ <section class="card tcard sec"><table class="tbl"><thead><tr><th>المهارة والمشروع</th><th>الموظف</th><th>الزميل الداعم</th><th>التقدم</th><th>الانتهاء</th><th>الحالة</th></tr></thead><tbody id="pbody"></tbody></table></section>
+</main>
+</div>
+<div class="ov" id="ov"></div><aside class="dr" id="dr" role="dialog" aria-modal="true" aria-labelledby="drt"></aside>
+<script>
+const IC={"employees": "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20c.6-3.4 3.3-5.5 6.5-5.5s5.9 2.1 6.5 5.5M16 4.6a3.3 3.3 0 0 1 0 6.3M18 14.8c2 .6 3.2 2.4 3.5 5.2", "skills": "M4 20V12M10 20V6M16 20v-9M21.5 20H2.5", "skill-gap": "M4 20V9M10 20V13M16 20V5M16 5h4M2.5 20h19", "recruitment": "M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3.5 20c.6-3.4 3.3-5.5 6.5-5.5 1.6 0 3 .5 4.1 1.4M19 14v6M16 17h6", "teams": "M12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5.5 12a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6zM18.5 12a2.3 2.3 0 1 0 0-4.6 2.3 2.3 0 0 0 0 4.6zM7 20c.4-3 2.4-5 5-5s4.6 2 5 5M2 18.5c.3-2 1.6-3.4 3.5-3.6M22 18.5c-.3-2-1.6-3.4-3.5-3.6", "projects": "M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z", "training": "M2.5 9 12 4.5 21.5 9 12 13.5zM6 11v5c1.8 1.6 3.8 2.4 6 2.4s4.2-.8 6-2.4v-5M21.5 9v6", "performance": "M3.5 19.5h17M6 15.5l4-4.5 3.5 3 5-6.5M15 7.5h3.5V11", "ai-spark": "M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z", "insights": "M12 3.5a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2v.5h5v-.5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3.5zM10 20.5h4", "document": "M6.5 3h7.5l4.5 4.5V21h-12zM14 3v4.5h4.5M9.5 12.5h6M9.5 16.5h6", "data": "M12 3c4.4 0 8 1.3 8 3s-3.6 3-8 3-8-1.3-8-3 3.6-3 8-3zM4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6", "search": "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20.5 20.5 16 16", "settings": "M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1", "notification": "M6 16.5V11a6 6 0 0 1 12 0v5.5l1.8 1.8H4.2zM10 21h4", "assistant": "M4 5h16v11H9.5L4 20.5zM8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01", "dashboard": "M3.5 3.5h7v8h-7zM13.5 3.5h7v5h-7zM13.5 11.5h7v9h-7zM3.5 14.5h7v6h-7z", "target": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zM12 12.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z", "calendar": "M4 6h16v14.5H4zM4 10.5h16M8.5 3v4M15.5 3v4", "arrow": "M15 5.5 8.5 12l6.5 6.5", "award": "M12 14.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM8.6 13.4 7.5 21l4.5-2.5 4.5 2.5-1.1-7.6", "building": "M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21M14 10h4.5A1.5 1.5 0 0 1 20 11.5V21M2.5 21h19M7.5 8h3M7.5 12h3M7.5 16h3", "bookmark": "M6.5 3.5h11V21L12 17l-5.5 4z", "verified": "M12 2.8l2.2 1.6 2.7-.2.9 2.6 2.2 1.6-.8 2.6.8 2.6-2.2 1.6-.9 2.6-2.7-.2L12 21.2l-2.2-1.6-2.7.2-.9-2.6-2.2-1.6.8-2.6-.8-2.6 2.2-1.6.9-2.6 2.7.2zM8.8 12l2.2 2.2 4.2-4.4", "clock": "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7.5V12l3 2"};
+const ic=(n,c='currentColor',s=20)=>`<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="${c}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="${IC[n]}"/></svg>`;
+const T=new Date();T.setHours(0,0,0,0);const D=n=>{const d=new Date(T);d.setDate(d.getDate()+n);return d};
+const fmt=d=>d.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn',{day:'numeric',month:'short'});
+const E=[
+ {id:'e1',n:'عمر الشمري',r:'مهندس واجهات أول',c:'dev',av:'k',h:35,ev:3,st:'في مشروع'},
+ {id:'e2',n:'دلال القحطاني',r:'مصممة تجربة مستخدم',c:'ready',av:'s',h:32,ev:4,st:'متاحة'},
+ {id:'e3',n:'فيصل الغامدي',r:'مهندس أنظمة خلفية',c:'ready',av:'k',h:40,ev:5,st:'في مشروع'},
+ {id:'e4',n:'نورة الشهري',r:'محللة بيانات',c:'dev',av:'b',h:30,ev:2,st:'متاحة'},
+ {id:'e5',n:'زياد الدوسري',r:'مهندس جودة',c:'ver',av:'s',h:35,ev:1,st:'متاح'},
+ {id:'e6',n:'ريم السبيعي',r:'مديرة تسليم تقني',c:'ready',av:'b',h:28,ev:4,st:'إجازة'},
+ {id:'e7',n:'سلطان العتيبي',r:'مهندس سحابة',c:'ready',av:'k',h:38,ev:5,st:'متاح'},
+ {id:'e8',n:'هيا المطيري',r:'مطورة تطبيقات جوال',c:'lim',av:'s',h:24,ev:1,st:'متاحة'}];
+const SK={e1:['React','TypeScript','واجهات المستخدم'],e2:['تجربة المستخدم','نظام التصميم','اختبارات الوصول WCAG'],e3:['Node.js','قواعد البيانات SQL','هندسة السحابة'],e4:['تحليل البيانات','Excel'],e5:['اختبارات آلية'],e6:['إدارة المشاريع','إدارة أصحاب المصلحة'],e7:['هندسة السحابة','Kubernetes','DevOps'],e8:['Flutter','تطبيقات الجوال']};
+const GAP={e1:'هندسة السحابة',e4:'تحليل البيانات SQL',e5:'اختبارات الوصول WCAG'};E.forEach(e=>{e.sk=SK[e.id]||[];e.gap=GAP[e.id]||''});
+const CAT={ready:['جاهز','c-ready','verified'],dev:['يحتاج تطوير','c-dev','training'],ver:['يحتاج تحقق','c-ver','search'],lim:['صلة محدودة','c-lim','bookmark']};
+const chip=(k,map)=>{const[a,b,i]=map[k];return `<span class="chip ${b}">${i?ic(i,'currentColor',14):'●'} ${a}</span>`};
+const em=id=>E.find(e=>e.id===id);
+const TS={late:['متأخرة','c-late','clock'],prog:['قيد التنفيذ','c-prog','performance'],plan:['مخططة','c-plan','calendar'],done:['مكتملة','c-done','verified'],arch:['مؤرشفة','c-arch','bookmark']};
+const TK=[
+ {t:'تحسين إمكانية الوصول في تدفق الاعتماد',e:'e1',h:16,d:-2,s:'late'},
+ {t:'بناء واجهات API لتصدير ملخصات الإنجاز',e:'e3',h:24,d:2,s:'prog'},
+ {t:'إعادة تصميم بطاقة تفاصيل المهمة',e:'e2',h:18,d:4,s:'prog'},
+ {t:'استعلامات تحليل ساعات العمل',e:'',h:14,d:5,s:'plan'},
+ {t:'أتمتة اختبارات مسار إسناد المهام',e:'e5',h:20,d:9,s:'plan'},
+ {t:'لوحة مؤشرات الفجوات للمدراء',e:'e4',h:26,d:12,s:'plan'},
+ {t:'نقل الخدمات إلى البيئة السحابية',e:'e7',h:30,d:-5,s:'done'},
+ {t:'توثيق إجراءات تسليم الإصدارات',e:'e6',h:12,d:-14,s:'arch'}];
+const PS={late:['متأخرة','c-late','clock'],prog:['قيد التنفيذ','c-prog','performance'],wait:['بانتظار اعتمادك','c-wait','notification'],appr:['معتمدة','c-appr','verified'],draft:['مسودة','c-draft','document'],done:['مكتملة','c-done','award']};
+const PL=[
+ {k:'هندسة السحابة والخدمات المصغّرة',p:'بوابة العملاء الموحدة V2',e:'e1',sp:'e7',d:22,s:'prog',pr:45,next:'تسليم النموذج الأولي واختبار النشر',nd:6},
+ {k:'تحليل البيانات المتقدم بـ SQL',p:'لوحة استثمار الطاقات',e:'e4',sp:'e3',d:-4,s:'late',pr:60,next:'مراجعة استعلامات الأداء',nd:-4},
+ {k:'اختبارات الوصول الرقمي WCAG',p:'منصة إسناد المشاريع',e:'e5',sp:'e2',d:12,s:'wait',pr:70,next:'اعتماد المحطة الثانية',nd:0},
+ {k:'رموز نظام التصميم',p:'دليل واجهات تشكيل',e:'e8',sp:'e2',d:35,s:'draft',pr:0,next:'تأكيد الزميل الداعم',nd:3},
+ {k:'تقدير السعة للفرق',p:'تخطيط الربع القادم',e:'e6',sp:'e3',d:-20,s:'done',pr:100,next:'—',nd:-20}];
+
+/* NAV */
+const views=['home','tasks','ready','plans'];
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+function show(v){views.forEach(x=>document.getElementById('v-'+x).classList.toggle('hidden',x!==v));document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v===v));scrollTo({top:0,behavior:'smooth'})}
+
+/* HOME */
+const cnt=k=>E.filter(e=>e.c===k).length;
+const COL={ready:'var(--sky)',dev:'var(--but)',ver:'#000',lim:'#CFCFCF'};
+document.getElementById('rbar').innerHTML=Object.keys(CAT).map(k=>`<i style="width:${cnt(k)/E.length*100}%;background:${COL[k]}" title="${CAT[k][0]}"></i>`).join('');
+document.getElementById('rleg').innerHTML=Object.keys(CAT).map(k=>`<span><i class="sw" style="background:${COL[k]}"></i>${CAT[k][0]} <b>${cnt(k)}</b> <span class="mu">(${Math.round(cnt(k)/E.length*100)}%)</span></span>`).join('');
+const K=[['جاهزين للمشروع',cnt('ready'),'verified','#80C0E0','عرض الفريق','home'],['يحتاجون تطوير',cnt('dev'),'training','#FFDE96','عرض الفجوات','ready'],['خطط تطوير نشطة',PL.filter(p=>['prog','late','wait','appr'].includes(p.s)).length,'document','#FFFFFF','عرض الخطط','plans'],['بانتظار قرارك',PL.filter(p=>p.s==='wait').length+cnt('ver'),'notification','#FFDE96','راجعها الحين','plans']];
+document.getElementById('kpis').innerHTML=K.map(k=>`<button class="kpi" data-go="${k[5]}"><span class="icc">${ic(k[2],k[3])}</span><span class="l">${k[0]}</span><span class="n">${k[1]}</span><span class="lk">${k[4]} ←</span></button>`).join('');
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+function renderE(){const q=document.getElementById('q').value.trim();const L=E.filter(e=>!q||e.n.includes(q));document.getElementById('ecount').textContent=L.length+' موظفين';
+ document.getElementById('elist').innerHTML=L.map(e=>`<button class="emp" data-e="${e.id}"><span class="av2 av-${e.av}">${e.n[0]}</span><span><span class="ttl">${e.n}</span><br><span class="sub">${e.r}</span></span>${chip(e.c,CAT)}<span class="pill">${e.st}</span><span class="pill">الأدلة: <b>${e.ev}</b> · ساعات: <b>${e.h}</b>/أسبوع</span></button>`).join('')||'<p class="mu">ما لقينا أحد بهالاسم.</p>';
+ document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>openEmp(b.dataset.e))}
+document.getElementById('q').oninput=renderE;renderE();
+const P0=['أسبوع','شهر','٣ شهور','سنة'];let per=1;
+function renderPer(){document.getElementById('period').innerHTML=P0.map((p,i)=>`<button aria-pressed="${i===per}" data-p="${i}">${p}</button>`).join('');document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{per=+b.dataset.p;renderPer();chart()})}
+const np=PL[0];
+document.getElementById('nplan').innerHTML=`<div class="row"><h2>أقرب خطة تطوير</h2><span class="sp"></span>${chip(np.s,PS)}</div>
+<div class="inner"><div class="sub">المهارة المستهدفة</div><div style="font:700 20px/1.4 var(--fs)">${np.k}</div><div class="sub">${np.p}</div>
+<div style="margin:14px 0 6px" class="row sm"><span>التقدم</span><span class="sp"></span><b>${np.pr}%</b></div><div class="bar" style="margin:0;height:10px"><i style="width:${np.pr}%;background:var(--sky)"></i></div>
+<div class="row sm" style="margin-top:14px">${ic('calendar')}<span>المحطة الجاية: <b>${np.next}</b></span><span class="sp"></span><span class="mu">${fmt(D(np.nd))}</span></div></div>
+<div class="row"><span class="av2 av-k">${em(np.e).n[0]}</span><span><span class="sub">الموظف</span><br><b>${em(np.e).n}</b></span><span class="sp"></span><span class="av2 av-s">${em(np.sp).n[0]}</span><span><span class="sub">الزميل الداعم</span><br><b>${em(np.sp).n}</b></span></div>
+<button class="btn p" style="width:100%;justify-content:center;margin-top:18px" onclick="openPlan(0)">عرض الخطة</button>`;
+function chart(){const n=[7,9,10,12][per];const tg=[...Array(n)].map((_,i)=>Math.round(4+i*(19/(n-1))));const ac=tg.map((t,i)=>Math.max(1,Math.round(t*(.35+.5*i/(n-1)))));
+ const W=560,H=250,px=44,py=20,mx=24;const X=i=>W-px-(i*(W-2*px)/(n-1)),Y=v=>H-py-(v/mx)*(H-2*py);
+ const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+ let g='';for(let v=0;v<=mx;v+=6)g+=`<line x1="${px}" x2="${W-px}" y1="${Y(v)}" y2="${Y(v)}" stroke="#EEE"/><text x="${W-px+12}" y="${Y(v)+4}" font-size="11" fill="#555">${v}</text>`;
+ const lab=i=>fmt(D(-(n-1-i)*[1,4,9,30][per]));
+ g+=[0,Math.floor((n-1)/2),n-1].map(i=>`<text x="${X(i)}" y="${H-2}" font-size="11" fill="#555" text-anchor="middle">${lab(i)}</text>`).join('');
+ document.getElementById('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="رسم نمو المهارات">${g}
+ <path d="${path(ac)} L${X(n-1)} ${Y(0)} L${X(0)} ${Y(0)}Z" fill="rgba(128,192,224,.18)"/><path d="${path(tg)}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="5 6"/><path d="${path(ac)}" fill="none" stroke="#80C0E0" stroke-width="3"/>
+ ${ac.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="#fff" stroke="#80C0E0" stroke-width="2.5"/>`).join('')}</svg>
+ <div class="row sm"><span>المحقق: <b>${ac[n-1]}</b> مهارة</span><span class="mu">·</span><span>المستهدف: <b>${tg[n-1]}</b></span><span class="sp"></span><span class="mu">آخر تحديث: ${fmt(T)}</span></div>`}
+renderPer();chart();
+
+/* TASKS */
+let tt='act';
+const tAct=TK.filter(t=>t.s!=='arch'),tArc=TK.filter(t=>t.s==='arch');
+function renderTT(){document.getElementById('ttabs').innerHTML=`<button role="tab" aria-selected="${tt==='act'}" data-t="act">النشطة (${tAct.length})</button><button role="tab" aria-selected="${tt==='arc'}" data-t="arc">المؤرشفة (${tArc.length})</button>`;document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tt=b.dataset.t;renderTT();renderT()})}
+const fs=document.getElementById('fs'),fe=document.getElementById('fe');
+Object.entries(TS).forEach(([k,v])=>fs.insertAdjacentHTML('beforeend',`<option value="${k}">${v[0]}</option>`));E.forEach(e=>fe.insertAdjacentHTML('beforeend',`<option value="${e.id}">${e.n}</option>`));
+fs.onchange=fe.onchange=()=>renderT();
+function renderT(){const L=(tt==='act'?tAct:tArc).filter(t=>(!fs.value||t.s===fs.value)&&(!fe.value||t.e===fe.value)).sort((a,b)=>((a.s==='done')-(b.s==='done'))||a.d-b.d);
+ document.getElementById('tbody').innerHTML=L.map(t=>`<tr class="r" tabindex="0" data-tk="${TK.indexOf(t)}"><td class="ttl">${t.t}</td><td data-l="المسؤول">${t.e?em(t.e).n:'<span class="mu">غير مسندة</span>'}</td><td data-l="الجهد">${ic('clock','#555',16)} ${t.h} ساعة</td><td data-l="التسليم">${fmt(D(t.d))}${t.d<0&&t.s==='late'?` <span class="sub">(تأخرت ${-t.d} يوم)</span>`:''}</td><td class="tst">${chip(t.s,TS)}</td></tr>`).join('')||`<tr><td colspan="5" style="text-align:center;padding:40px" class="mu">ما فيه مهام بهالفلتر.</td></tr>`;
+ document.querySelectorAll('[data-tk]').forEach(r=>{r.onclick=()=>openTask(+r.dataset.tk);r.onkeydown=e=>{if(e.key==='Enter')openTask(+r.dataset.tk)}})}
+renderTT();renderT();
+
+/* READINESS (مربوطة بالذكاء الاصطناعي، مع بديل تجريبي) */
+const SN=['ارفع خطتك','راجع المهارات','جاهزية الفريق','خطة التطوير','المتابعة'];let cs=0,done=-1;
+const DEMO_REQ=[{s:'هندسة السحابة',p:'أساسية',src:'من الخطة',w:'المشروع ينتقل لبنية خدمات مصغّرة على السحابة.'},{s:'React و TypeScript',p:'أساسية',src:'من الخطة',w:'واجهات البوابة الجديدة مبنية بـ React.'},{s:'تحليل البيانات SQL',p:'أساسية',src:'مستنتجة',w:'فيه لوحة مؤشرات تعتمد على استعلامات.'},{s:'اختبارات الوصول WCAG',p:'اختيارية',src:'مستنتجة',w:'البوابة خدمة عامة وتحتاج وصول رقمي.'},{s:'إدارة أصحاب المصلحة',p:'اختيارية',src:'مستنتجة',w:'المشروع يمر على أكثر من إدارة.'}];
+const DEMO_WHY={ready:'مهاراته تغطي احتياج المشروع، وأدلته كافية.',dev:'دوره قريب من المشروع، بس تنقصه مهارة أساسية.',ver:'يبان مناسب، لكن أدلته قليلة وتحتاج تأكيد.',lim:'دوره بعيد عن احتياج هالمشروع.'};
+let FILES=[],REQ=DEMO_REQ.map(r=>({...r})),PROJ='بوابة العملاء الموحدة V2',AS=null,PLAN=null,PSEL='',busy='',note='',MODE='demo';
+const aiB=()=>{const b=document.getElementById('aiBadge');if(b)b.innerHTML=MODE==='ai'?`${ic('ai-spark','currentColor',14)} حلّلها Gemini`:`${ic('ai-spark','currentColor',14)} نتيجة تجريبية`;b&&(b.className='chip '+(MODE==='ai'?'c-ready':'c-plan'))};
+async function api(path,body){try{const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>null);if(r.ok&&j&&j.ok)return j}catch(e){}return null}
+const toB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function addFiles(list){note='';for(const f of list){if(FILES.length>=3){note='الحد ٣ ملفات.';break}if(f.type!=='application/pdf'&&!/\.pdf$/i.test(f.name)){note='نقبل ملفات PDF بس.';continue}FILES.push(f)}
+ if(FILES.reduce((a,f)=>a+f.size,0)>4.5e6){note='حجم الملفات كبير. خلّها أقل من 4.5 ميقا مع بعض.';FILES.pop()}renderS()}
+async function analyze(sample){busy='نقرأ خطتك ونطلع المهارات…';renderS();let j=null;
+ if(!sample&&FILES.length){const files=await Promise.all(FILES.map(async f=>({name:f.name,data:await toB64(f)})));j=await api('/api/analyze',{files})}
+ if(j&&Array.isArray(j.requirements)&&j.requirements.length){REQ=j.requirements.map(r=>({s:r.skill,p:r.priority,src:r.source,w:r.evidence}));PROJ=j.project||PROJ;MODE='ai';note=''}
+ else{REQ=DEMO_REQ.map(r=>({...r}));PROJ='بوابة العملاء الموحدة V2';MODE='demo';note=sample?'':'ما قدرنا نوصل للذكاء الاصطناعي، فعرضنا لك نتيجة تجريبية.'}
+ AS=null;PLAN=null;busy='';done=0;cs=1;renderS();aiB()}
+async function assess(){busy='نقارن مهارات فريقك باحتياج المشروع…';renderS();
+ const j=REQ.length?await api('/api/assess',{requirements:REQ.map(r=>({skill:r.s,priority:r.p})),employees:E.map(e=>({id:e.id,name:e.n,role:e.r,skills:e.sk,evidence:e.ev}))}):null;
+ AS={};if(j&&Array.isArray(j.assessments))j.assessments.forEach(a=>{if(em(a.id)&&CAT[a.category])AS[a.id]={c:a.category,why:a.reason,gap:a.gap}});
+ if(!j)MODE='demo';E.forEach(e=>{if(!AS[e.id])AS[e.id]={c:e.c,why:DEMO_WHY[e.c],gap:e.gap}});
+ PSEL=(E.find(e=>AS[e.id].c==='dev')||E[0]).id;busy='';done=Math.max(done,1);cs=2;renderS();aiB()}
+async function makePlan(){const e=em(PSEL),gap=(AS&&AS[PSEL]&&AS[PSEL].gap)||e.gap||REQ[0]?.s||'';busy='نجهّز خطة تطوير عملية…';renderS();
+ const j=await api('/api/plan',{employee:{id:e.id,name:e.n,role:e.r},gap,project:PROJ,colleagues:E.map(c=>({id:c.id,name:c.n,skills:c.sk}))});
+ if(j&&j.skill&&em(j.supporterId)&&j.supporterId!==e.id)PLAN={e:e.id,k:j.skill,act:j.activity,del:j.deliverable,sp:j.supporterId,why:j.supporterWhy,w:j.weeks||3,cps:(j.checkpoints||[]).slice(0,3)};
+ else{MODE='demo';const sp=E.find(c=>c.id!==e.id&&(c.sk||[]).some(s=>gap&&(s.includes(gap)||gap.includes(s))))||E.find(c=>c.id!==e.id&&AS?.[c.id]?.c==='ready')||E.find(c=>c.id!==e.id);
+  PLAN={e:e.id,k:gap,act:'جزء حقيقي من المشروع يطبّق فيه المهارة، بمرافقة زميله.',del:'نموذج عملي + ملخص قصير لما تعلّمه',sp:sp.id,why:'يملك المهارة واشتغل عليها قبل.',w:3,cps:[{title:'مراجعة أولية مع الزميل',week:1},{title:'تسليم الجزء العملي',week:3}]}}
+ busy='';done=Math.max(done,2);cs=3;renderS();aiB()}
+function approve(){PL.unshift({k:PLAN.k,p:PROJ,e:PLAN.e,sp:PLAN.sp,d:PLAN.w*7,s:'appr',pr:0,next:PLAN.cps[0]?.title||'—',nd:(PLAN.cps[0]?.week||1)*7});renderP();done=Math.max(done,3);cs=4;renderS();toast('اعتمدت الخطة، وانضافت لخطط التطوير.')}
+function toast(t){let d=document.getElementById('toast');if(!d){d=document.createElement('div');d.id='toast';d.setAttribute('role','status');d.style.cssText='position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:12px 20px;border-radius:999px;z-index:30;font-weight:600;transition:.3s';document.body.appendChild(d)}d.textContent=t;d.style.opacity=1;clearTimeout(d._t);d._t=setTimeout(()=>d.style.opacity=0,2600)}
+function renderS(){document.getElementById('steps').innerHTML=SN.map((s,i)=>`<button class="st ${i===cs?'on':i<=done?'dn':i>done+1?'off':''}" ${i>done+1||busy?'disabled':''} data-s="${i}"><span class="n">${i<=done&&i!==cs?'✓':i+1}</span><b>${s}</b><span class="sub">${i===cs?'الحين':i<=done?'تمّت':i>done+1?'مقفلة':'جاهزة'}</span></button>`).join('');
+ document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{cs=+b.dataset.s;renderS()});
+ document.getElementById('stm').innerHTML=`<div class="row"><b>الخطوة ${cs+1} من 5</b><span class="sp"></span><span class="mu sm">${SN[cs]}</span></div><div class="bar" style="margin:10px 0 0;height:8px"><i style="width:${(cs+1)*20}%;background:var(--sky)"></i></div>`;
+ const nx=(t,act,dis)=>`<div class="row stepnav" style="margin-top:24px">${cs?'<button class="btn g" onclick="cs--;renderS()">→ رجوع</button>':''}<span class="sp"></span><button class="btn p" ${dis?'disabled style="opacity:.4"':''} onclick="${act}">${t} ←</button></div>`;
+ const B=document.getElementById('stepBody');const N=note?`<p class="chip c-wait" style="margin:12px 0 0">${esc(note)}</p>`:'';
+ if(busy){B.innerHTML=`<div style="text-align:center;padding:48px 0"><span class="icc spin" style="margin:0 auto">${ic('ai-spark','#FFDE96')}</span><h3 style="margin-top:18px">${busy}</h3><p class="mu sm">عادةً ياخذ أقل من دقيقة.</p></div>`;return}
+ if(cs===0){B.innerHTML=`<div class="row" style="flex-wrap:wrap"><div><h2>ارفع خطة مشروعك</h2><p class="mu" style="margin:4px 0 0">ملفات PDF، لين ٣ ملفات. نطلع منها المهارات اللي يحتاجها مشروعك.</p></div><span class="sp"></span><button class="btn s" onclick="analyze(true)">${ic('ai-spark')} جرّب بخطة نموذجية</button></div>
+  <label class="drop sec" id="drop" style="display:block;cursor:pointer"><input type="file" id="fi" accept="application/pdf,.pdf" multiple hidden><span class="icc" style="margin:0 auto">${ic('document','#FFDE96')}</span><h3 style="margin-top:16px">اسحب ملفاتك هنا</h3><p class="mu sm">أو اضغط واختارها من جهازك</p></label>
+  ${FILES.map((f,i)=>`<div class="req" style="grid-template-columns:auto 1fr auto"><span>${ic('document')}</span><span><b>${esc(f.name)}</b><br><span class="sub">${(f.size/1e6).toFixed(2)} ميقا</span></span><button class="ib" style="width:38px;height:38px;box-shadow:none" aria-label="شيل الملف" onclick="FILES.splice(${i},1);renderS()">✕</button></div>`).join('')}${N}${nx('حلّل الخطة','analyze(false)',!FILES.length)}`;
+  const fi=document.getElementById('fi'),dp=document.getElementById('drop');fi.onchange=()=>addFiles(fi.files);
+  dp.ondragover=e=>{e.preventDefault();dp.style.borderColor='#000'};dp.ondragleave=()=>dp.style.borderColor='';dp.ondrop=e=>{e.preventDefault();dp.style.borderColor='';addFiles(e.dataTransfer.files)}}
+ if(cs===1)B.innerHTML=`<h2>المهارات اللي يحتاجها المشروع</h2><p class="mu">${esc(PROJ)} · عدّل أو احذف أو أضف. أنت تعرف مشروعك أكثر.</p>${N}${REQ.map((r,i)=>`<div class="req" style="grid-template-columns:1fr auto auto auto"><span><b>${esc(r.s)}</b><br><span class="sub">${esc(r.w)}</span></span><button class="chip ${r.p==='أساسية'?'c-done':'c-plan'}" onclick="REQ[${i}].p=REQ[${i}].p==='أساسية'?'اختيارية':'أساسية';renderS()" title="غيّر الأولوية">${esc(r.p)}</button><span class="chip c-lim">${esc(r.src)}</span><button class="ib" style="width:36px;height:36px;box-shadow:none" aria-label="احذف" onclick="REQ.splice(${i},1);renderS()">✕</button></div>`).join('')}
+  <div class="row" style="margin-top:12px"><input id="nr" placeholder="أضف مهارة…" style="flex:1;border:1px solid var(--ln);border-radius:999px;padding:11px 16px"><button class="btn g" onclick="const v=document.getElementById('nr').value.trim();if(v){REQ.push({s:v,p:'أساسية',src:'أضافها المدير',w:'أضفتها بنفسك.'});renderS()}">+ أضف</button></div>${nx('حلّل جاهزية الفريق','assess()',!REQ.length)}`;
+ if(cs===2){const A=AS||Object.fromEntries(E.map(e=>[e.id,{c:e.c,why:DEMO_WHY[e.c]}]));const c=k=>E.filter(e=>A[e.id].c===k);
+  B.innerHTML=`<h2>جاهزية فريقك للمشروع</h2><p class="mu">هذا اقتراح. تقدر تغيّر تصنيف أي موظف، والقرار لك.</p><div class="cat sec">${Object.keys(CAT).map(k=>`<div class="col"><div class="row">${chip(k,CAT)}<span class="sp"></span><b>${c(k).length}</b></div>${c(k).map(e=>`<div class="mini" style="flex-wrap:wrap"><span class="av2 av-${e.av}" style="width:32px;height:32px;font-size:13px">${e.n[0]}</span><span class="sm" style="flex:1"><b>${e.n}</b><br><span class="mu">${esc(A[e.id].why)}</span></span><select aria-label="غيّر تصنيف ${e.n}" onchange="AS=AS||{};AS['${e.id}']={...(AS['${e.id}']||{}),c:this.value,why:'غيّرته أنت.'};renderS()" style="border:1px solid var(--ln);border-radius:999px;padding:4px 8px;font-size:12px;background:#fff">${Object.keys(CAT).map(x=>`<option value="${x}" ${x===k?'selected':''}>${CAT[x][0]}</option>`).join('')}</select></div>`).join('')}${k==='ver'&&c(k).length?'<button class="btn s sm" style="margin-top:10px;width:100%;justify-content:center" onclick="toast(\'أرسلنا طلب دليل.\')">اطلب دليل</button>':''}</div>`).join('')}</div>
+  <label class="sel" style="margin-top:18px">خطة تطوير لمين؟<select onchange="PSEL=this.value">${E.filter(e=>A[e.id].c==='dev'||A[e.id].c==='ver').map(e=>`<option value="${e.id}" ${e.id===PSEL?'selected':''}>${e.n}</option>`).join('')}</select></label>${nx('سوّ خطة تطوير','makePlan()',!E.some(e=>['dev','ver'].includes(A[e.id].c)))}`;if(!PSEL||!['dev','ver'].includes(A[PSEL]?.c))PSEL=(E.find(e=>['dev','ver'].includes(A[e.id].c))||{}).id}
+ if(cs===3){const p=PLAN;if(!p){B.innerHTML=`<p class="mu">ارجع للخطوة اللي قبل وسوّ خطة.</p>`;return}
+  B.innerHTML=`<h2>خطة تطوير: ${em(p.e).n}</h2><p class="mu">مقترحة لسد فجوة «${esc(p.k)}». راجعها قبل لا تعتمدها.</p>
+  <div class="kv"><span class="mu">المهارة</span><b>${esc(p.k)}</b></div><div class="kv"><span class="mu">النشاط العملي</span><span>${esc(p.act)}</span></div><div class="kv"><span class="mu">التسليم</span><span>${esc(p.del)}</span></div>
+  <div class="kv"><span class="mu">الزميل الداعم</span><span>${em(p.sp).n} <span class="chip c-ready">${ic('verified','currentColor',14)} ${esc(p.why)}</span></span></div>
+  <div class="kv"><span class="mu">المدة</span><span>${p.w} أسابيع</span></div><div class="kv"><span class="mu">المحطات</span><span>${p.cps.map(c=>`الأسبوع ${c.week}: ${esc(c.title)}`).join('<br>')}</span></div>${nx('اعتمد الخطة','approve()')}`}
+ if(cs===4){const p=PLAN||{e:PL[2].e,k:PL[2].k,cps:[{title:'مراجعة أولية',week:1},{title:'تقرير اختبارات الوصول',week:2}],w:3};
+  B.innerHTML=`<h2>متابعة: ${em(p.e).n}</h2><p class="mu">${esc(p.k)}</p>${p.cps.map((c,i)=>`<div class="cp"><span class="d" style="background:${i?'var(--bg)':'var(--but)'}">${i+1}</span><div style="flex:1"><b>${esc(c.title)}</b><div class="sub">${fmt(D(c.week*7))}${i?'':' · المحطة الجاية'}</div></div>${i?'':'<button class="btn s" onclick="toast(\'ذكّرنا الموظف بالمحطة.\')">ذكّره</button>'}</div>`).join('')}
+  <div class="cp"><span class="d" style="background:var(--bg)">✓</span><div><b>التقييم النهائي: القرار لك</b><div class="sub">${fmt(D(p.w*7))}</div></div></div>`}}
+renderS();
+
+/* PLANS */
+let pf='';
+function renderPT(){const F=[['','الكل'],['wait','بانتظارك'],['prog','جارية'],['late','متأخرة'],['draft','مسودة'],['done','مكتملة']];document.getElementById('ptabs').innerHTML=F.map(f=>`<button aria-selected="${pf===f[0]}" data-pf="${f[0]}">${f[1]}</button>`).join('');document.querySelectorAll('[data-pf]').forEach(b=>b.onclick=()=>{pf=b.dataset.pf;renderPT();renderP()})}
+document.getElementById('pq').oninput=()=>renderP();
+function renderP(){const q=document.getElementById('pq').value.trim();const L=PL.filter(p=>(!pf||p.s===pf)&&(!q||[p.k,p.p,em(p.e).n].some(x=>x.includes(q))));
+ document.getElementById('pbody').innerHTML=L.map(p=>`<tr class="r" tabindex="0" data-pl="${PL.indexOf(p)}"><td><div class="ttl">${p.k}</div><div class="sub">${p.p}</div></td><td data-l="الموظف">${em(p.e).n}</td><td data-l="الداعم">${em(p.sp).n}</td><td class="tpr" style="min-width:120px"><div class="bar" style="margin:0;height:8px"><i style="width:${p.pr}%;background:${p.s==='late'?'var(--but)':'var(--sky)'}"></i></div><span class="sub">${p.pr}%</span></td><td data-l="الانتهاء">${fmt(D(p.d))}</td><td class="tst">${chip(p.s,PS)}</td></tr>`).join('')||`<tr><td colspan="6" style="text-align:center;padding:40px" class="mu">ما فيه خطط بهالفلتر.</td></tr>`;
+ document.querySelectorAll('[data-pl]').forEach(r=>{r.onclick=()=>openPlan(+r.dataset.pl);r.onkeydown=e=>{if(e.key==='Enter')openPlan(+r.dataset.pl)}})}
+renderPT();renderP();
+
+/* DRAWER */
+const ov=document.getElementById('ov'),dr=document.getElementById('dr');let last;
+function openD(h){last=document.activeElement;dr.innerHTML=`<div class="grab"></div><div class="row"><span class="sp"></span><button class="ib" aria-label="إغلاق" onclick="closeD()">✕</button></div>`+h;ov.classList.add('on');dr.classList.add('on');dr.querySelector('button').focus()}
+function closeD(){ov.classList.remove('on');dr.classList.remove('on');last&&last.focus()}
+ov.onclick=closeD;addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});
+function openTask(i){const t=TK[i];openD(`<h2 id="drt" style="margin-top:8px">${t.t}</h2><div style="margin:10px 0">${chip(t.s,TS)}</div><div class="kv"><span class="mu">المسؤول</span><b>${t.e?em(t.e).n:'غير مسندة'}</b></div><div class="kv"><span class="mu">الجهد</span><span>${t.h} ساعة</span></div><div class="kv"><span class="mu">التسليم</span><span>${fmt(D(t.d))}</span></div><div class="row" style="margin-top:20px"><button class="btn p">أسندها للأجهز</button><button class="btn s">أرشفة</button></div>`)}
+function openPlan(i){const p=PL[i];openD(`<h2 id="drt" style="margin-top:8px">${p.k}</h2><div class="sub">${p.p}</div><div style="margin:10px 0">${chip(p.s,PS)}</div><div class="kv"><span class="mu">الموظف</span><b>${em(p.e).n}</b></div><div class="kv"><span class="mu">الزميل الداعم</span><span>${em(p.sp).n}</span></div><div class="kv"><span class="mu">التقدم</span><span>${p.pr}%</span></div><div class="kv"><span class="mu">المحطة الجاية</span><span>${p.next}</span></div><div class="kv"><span class="mu">الانتهاء</span><span>${fmt(D(p.d))}</span></div>${p.s==='wait'?'<button class="btn p" style="margin-top:20px">اعتمد المحطة</button>':''}`)}
+function openEmp(id){const e=em(id);openD(`<div class="row" style="margin-top:8px"><span class="av2 av-${e.av}">${e.n[0]}</span><div><h2 id="drt">${e.n}</h2><div class="sub">${e.r}</div></div></div><div style="margin:14px 0">${chip(e.c,CAT)}</div><div class="kv"><span class="mu">الحالة</span><span>${e.st}</span></div><div class="kv"><span class="mu">الساعات</span><span>${e.h} ساعة/أسبوع</span></div><div class="kv"><span class="mu">الأدلة</span><span>${e.ev}</span></div>${e.c==='dev'?'<button class="btn p" style="margin-top:20px">سوّ خطة تطوير</button>':e.c==='ver'?'<button class="btn p" style="margin-top:20px">اطلب دليل</button>':''}`)}
+document.getElementById('newTask').onclick=()=>openD(`<h2 id="drt" style="margin-top:8px">مهمة جديدة</h2><label class="sel" style="margin-top:16px">عنوان المهمة<input style="border:1px solid var(--ln);border-radius:14px;padding:12px" placeholder="مثال: تحسين صفحة الدخول"></label><label class="sel" style="margin-top:12px">المسؤول<select>${E.map(e=>`<option>${e.n}</option>`).join('')}</select></label><button class="btn p" style="margin-top:20px">أضف المهمة</button>`);
+</script></body></html>
