@@ -1,14 +1,15 @@
 // مساعد مشترك للاتصال بـ Gemini. المفتاح يُقرأ من إعدادات Netlify فقط.
-const MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
+// نجرب الموديلات بالترتيب: إذا واحد مضغوط (503) أو غير متاح، ننتقل للي بعده
+const MODELS = [...new Set([process.env.GEMINI_MODEL, "gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash"].filter(Boolean))];
 const LIMIT_MS = 24000; // نوقف قبل حد Netlify (30 ثانية) عشان نرجّع رد واضح
 
-async function call(parts, schema, thinking) {
+async function call(MODEL, parts, schema, thinking, ms) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("NO_KEY");
   const generationConfig = { responseMimeType: "application/json", responseSchema: schema, temperature: 0.3, maxOutputTokens: 2048 };
   if (thinking) generationConfig.thinkingConfig = thinking;
   const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), LIMIT_MS);
+  const t = setTimeout(() => ctrl.abort(), ms);
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
       method: "POST",
@@ -26,7 +27,7 @@ async function call(parts, schema, thinking) {
     const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") || "";
     return JSON.parse(text);
   } catch (e) {
-    if (e.name === "AbortError") throw new Error(`TIMEOUT: Gemini (${MODEL}) took more than ${LIMIT_MS / 1000}s`);
+    if (e.name === "AbortError") throw new Error(`TIMEOUT: Gemini (${MODEL}) took too long`);
     throw e;
   } finally {
     clearTimeout(t);
@@ -35,21 +36,28 @@ async function call(parts, schema, thinking) {
 
 export async function askGemini(parts, schema) {
   const started = Date.now();
-  // نطفّي "التفكير" عشان الرد يكون أسرع. إذا الموديل ما يدعم هالإعداد، نعيد المحاولة بدونه.
-  const thinking = /gemini-3/.test(MODEL) ? { thinkingLevel: "low" } : { thinkingBudget: 0 };
-  try {
-    const out = await call(parts, schema, thinking);
-    console.log(`ok model=${MODEL} ${Date.now() - started}ms`);
-    return out;
-  } catch (e) {
-    if (e.status === 400) {
-      console.log("retrying without thinkingConfig:", String(e.message).slice(0, 200));
-      const out = await call(parts, schema, null);
-      console.log(`ok (retry) model=${MODEL} ${Date.now() - started}ms`);
+  let last;
+  for (const MODEL of MODELS) {
+    const left = LIMIT_MS - (Date.now() - started);
+    if (left < 3000) break;
+    const thinking = /gemini-3/.test(MODEL) ? { thinkingLevel: "low" } : /lite/.test(MODEL) ? null : { thinkingBudget: 0 };
+    try {
+      let out;
+      try {
+        out = await call(MODEL, parts, schema, thinking, left);
+      } catch (e) {
+        if (e.status !== 400 || !thinking) throw e;
+        out = await call(MODEL, parts, schema, null, LIMIT_MS - (Date.now() - started));
+      }
+      console.log(`ok model=${MODEL} ${Date.now() - started}ms`);
       return out;
+    } catch (e) {
+      last = e;
+      console.log(`model ${MODEL} failed:`, String(e.message).slice(0, 160));
+      if (![404, 429, 500, 503].includes(e.status)) throw e;
     }
-    throw e;
   }
+  throw last || new Error("TIMEOUT: no model answered in time");
 }
 
 export const json = (body, status = 200) =>
