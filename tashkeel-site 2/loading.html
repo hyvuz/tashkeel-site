@@ -1,0 +1,26 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تشكيل — جارِ التحميل</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>:root{--bg:#F0F0F0;--s:#fff;--ink:#000;--mu:#555;--sky:#80C0E0;--but:#FFDE96;--line:#E6E6E6;
+--fd:"thmanyah serif display","Thmanyah Serif Display","IBM Plex Sans Arabic",serif;--fs:"IBM Plex Sans Arabic",system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font-family:var(--fs);direction:rtl;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:grid;place-items:center;background:radial-gradient(60% 60% at 80% 15%,#FFEBB8 0%,transparent 70%),radial-gradient(70% 70% at 15% 85%,#BFE0F0 0%,transparent 70%),var(--bg);overflow:hidden}
+.wrap{text-align:center}
+.mk{width:220px;height:auto;overflow:visible}
+.d{fill:#000;transform-box:fill-box;transform-origin:center bottom;animation:drop 1.6s cubic-bezier(.3,.6,.3,1) infinite}
+.d2{animation-delay:.12s}.d3{animation-delay:.24s}
+@keyframes drop{0%{transform:translateY(-140px);opacity:0}35%{transform:translateY(0);opacity:1}45%{transform:translateY(0) scaleY(.82)}55%{transform:translateY(0) scaleY(1)}85%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:0}}
+.sp{fill:#000;transform-box:fill-box;transform-origin:center;animation:tw 1.6s ease-in-out infinite}
+@keyframes tw{0%,40%{transform:scale(0) rotate(0);opacity:0}60%{transform:scale(1.25) rotate(45deg);opacity:1}80%{transform:scale(1) rotate(90deg);opacity:1}100%{transform:scale(0) rotate(90deg);opacity:0}}
+.sh{animation:sh 1.6s ease-in-out infinite;transform-box:fill-box}@keyframes sh{0%,100%{transform:translateX(-14px)}50%{transform:translateX(0)}}
+.word{font:700 44px/1 var(--fd);margin-top:26px}
+.msg{margin-top:14px;color:var(--mu);font-size:15px;height:24px}
+.bar{width:240px;height:8px;border-radius:9px;background:#DDDDDD;margin:20px auto 0;overflow:hidden;position:relative}
+.bar i{position:absolute;inset-block:0;right:0;width:40%;border-radius:9px;background:#000;animation:load 1.6s ease-in-out infinite}
+@keyframes load{0%{right:-40%}100%{right:100%}}
+@media (prefers-reduced-motion:reduce){.d,.sp,.sh,.bar i{animation:none}}
+</style></head><body><div class="wrap" role="status" aria-live="polite"><svg viewBox="206 284 656 442" class="mk" aria-hidden="true">
+<path class="sh" d="M248 410 H856 A304 304 0 0 1 248 410Z" fill="#FFDE96"/>
+<path class="bw" d="M212 410 H820 A304 304 0 0 1 212 410Z" fill="#80C0E0"/>
+<circle class="d d1" cx="450" cy="400" r="21"/><circle class="d d2" cx="516" cy="368" r="54"/><circle class="d d3" cx="582" cy="400" r="21"/>
+<path class="sp" d="M626 292C632 306 642 316 656 322 642 328 632 338 626 352 620 338 610 328 596 322 610 316 620 306 626 292Z"/></svg><div class="word">تشكيل</div>
+<div class="msg" id="m">نقرأ خطط المؤسسة…</div><div class="bar"><i></i></div></div>
+<script>const t=["نقرأ خطط المؤسسة…","نحلّل المهارات المطلوبة…","نجهّز الفريق المناسب…"];let i=0;setInterval(()=>{i=(i+1)%t.length;document.getElementById('m').textContent=t[i]},1600);</script><script>setTimeout(()=>location.href="app.html",2600)</script></body></html>
