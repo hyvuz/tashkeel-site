@@ -6,7 +6,7 @@ const LIMIT_MS = 24000; // نوقف قبل حد Netlify (30 ثانية) عشان
 async function call(MODEL, parts, schema, thinking, ms) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("NO_KEY");
-  const generationConfig = { responseMimeType: "application/json", responseSchema: schema, temperature: 0.3, maxOutputTokens: 2048 };
+  const generationConfig = { responseMimeType: "application/json", responseSchema: schema, temperature: 0.3, maxOutputTokens: 8192 };
   if (thinking) generationConfig.thinkingConfig = thinking;
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), ms);
@@ -24,8 +24,14 @@ async function call(MODEL, parts, schema, thinking, ms) {
       throw err;
     }
     const data = JSON.parse(body);
-    const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") || "";
-    return JSON.parse(text);
+    const cand = data?.candidates?.[0];
+    const text = cand?.content?.parts?.filter((p) => !p.thought).map((p) => p.text || "").join("") || "";
+    if (!text) throw new Error(`EMPTY: ${MODEL} finish=${cand?.finishReason || data?.promptFeedback?.blockReason || "unknown"}`);
+    try {
+      return JSON.parse(text.replace(/^\s*```(?:json)?\s*|\s*```\s*$/g, ""));
+    } catch {
+      throw new Error(`BAD_JSON: ${MODEL} finish=${cand?.finishReason || "?"} len=${text.length}`);
+    }
   } catch (e) {
     if (e.name === "AbortError") throw new Error(`TIMEOUT: Gemini (${MODEL}) took too long`);
     throw e;
@@ -66,7 +72,8 @@ export const json = (body, status = 200) =>
 export async function handle(req, fn) {
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
   try {
-    const input = await req.json();
+    let input;
+    try { input = await req.json(); } catch { return json({ ok: false, error: "BAD_REQUEST", detail: "الطلب أكبر من المسموح أو غير صالح" }, 400); }
     return json({ ok: true, source: "gemini", ...(await fn(input)) });
   } catch (e) {
     const msg = String(e?.message || e);
